@@ -1,0 +1,25 @@
+body {
+	background-color: black;
+}
+
+.logo {
+	width: 100%;
+}
+
+.psyh {
+	width: 40%;
+}
+
+.txt-color {
+	color: #ffffff;
+}
+
+.txt-box1 {
+	text-align: center;
+}
+
+.txt-box2 {
+	
+	width: 70%;
+	margin-left: 25%;
+}
