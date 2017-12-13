@@ -3,9 +3,17 @@
 var win = 0;
 var lose = 0;
 var guessLeft = 9;
-var counter = 0;
 var guessSoFar = "";
+var message = "";
+var singleLetter = "";
+var charSet;
+var keyPress;
+var ranLetter;
 var charNum = 0;
+var displayText = document.getElementById("lttr-tracker");
+var winner = document.getElementById("wins");
+var losses = document.getElementById("lose");
+var guessTxt = document.getElementById("guess");
 
 //create a counter function for win
 function winCounter(){
@@ -21,88 +29,83 @@ function loseCounter(){
 
 //random string generator
 function stringGen(){
-	var letter = "";
-	var charSet = "abcdefghijklmnopqrstuvwxyz0123456789";
+	singleLetter = "";
+	charSet = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 	for (var i = 0; i < 1; i++) {
-		letter += charSet.charAt(Math.floor(Math.random() * charSet.length));
+		singleLetter += charSet.charAt(Math.floor(Math.random() * charSet.length));
 	}
 
-	return letter;
+	return singleLetter;
 }
 
 //create a function for decressing guesses
 function guessCounter(){
-	guessLeft -= 1;
-	var guessTxt = document.getElementById("guess");
-	guessTxt.textContent = guessLeft;
+	return guessLeft-=1;
 }
 
 
 //reset the game
 function reStartGame(){
-	var resetGuess = document.getElementById("lttr-tracker")
-	var resetLeft = document.getElementById("guess");
 	guessLeft = 9;
 	counter = 0;
 	guessSoFar = "";
-	alert("Play Again!");
-	resetLeft.textContent = guessLeft;
-	resetGuess.textContent = guessSoFar;
+	guessTxt.textContent = guessLeft;
+	displayText.textContent = guessSoFar;
 }
 
 
 //create key event for the game
 document.onkeyup = function(event) {
-	var keyPress = event.key;
+	//get the key on the keyboard the user entered
+	keyPress = event.key;
+
+	//generate a random letter
+	ranLetter = stringGen();
+
+
+	//checking to see if the string is empty
+	if (guessSoFar === ""){
+		guessSoFar = keyPress;
+	} else { //if the string is not empty, then contactnate the string to the new pressed key
+		//check to a letter already exist in the string
+		if (guessSoFar.includes(keyPress) === false){
+			guessSoFar = guessSoFar + ", " + keyPress;
+		}
+	}
+
+	//update the html display for key's pressed so far
+	displayText.textContent = guessSoFar;
+
+	//decrease the guess left by 1
+	guessLeft = guessCounter();
 	
+	//update the html display for guess left
+	guessTxt.textContent = guessLeft;
 
-	if (counter < 8){
-		//generte a random letter
-		var ranLetter = stringGen();
-		var userText = document.getElementById("lttr-tracker");
-		counter++;
-		// console.log(guessLeft);
-		// console.log(counter);
+	if (keyPress === ranLetter){
+		//increase the win counter by 1
+		win = winCounter();
 		
-		//function to decrese the counter while the counter is les than guessLeft
-		guessCounter();
+		//update the html display counter for win
+		winner.textContent = win;
 
+		//Reset the counter and guess so far and guesss left to reset the game for another round
+		reStartGame();
+	}
 
-		if (guessSoFar === ""){
-			guessSoFar = keyPress;
-		} else {
-			if ( guessSoFar.includes(keyPress) === false){
-				guessSoFar = guessSoFar + ", " + keyPress;
-			}
-			// guessSoFar = guessSoFar + ", " + keyPress;
-		}
-
-		userText.textContent = guessSoFar;
-
-		//if the userguess is the same
-		if (keyPress === ranLetter){
-			var winner = document.getElementById("wins");
-			//increase the win counter
-			win = winCounter();
-			//send an alert that the user won!
-			alert("You Won!");
-			//Reset the counter and guess so far and guesss left to reset the game for another round
-			reStartGame();
-			winner.textContent = win;
-		}
-	} else {
-		guessCounter();
-		var losses = document.getElementById("lose");
+	if (guessLeft === 0){
+		//increase the lose counter by 1
 		lose = loseCounter();
-		if (guessLeft === 0){
-			alert("You Lose!");
-			reStartGame();
-			losses.textContent = lose;
-		}
-		// alert("You Lose!");
-		// reStartGame();
-		// losses.textContent = lose;
+		
+		//update the html display for guess left
+		guessTxt.textContent = guessLeft;
+		
+		//udpate the html display counter for losses
+		losses.textContent = lose;
+		
+		//Reset the counter and guess so far and guesss left to reset the game for another round
+		reStartGame();
 	}
 
 }
